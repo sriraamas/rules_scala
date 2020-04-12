@@ -107,11 +107,8 @@ _compile_attributes = {
         doc = "The JVM library dependencies to always consider used for `scala_deps_used` checks.",
         providers = [JavaInfo],
     ),
-    "exports": attr.label_list(
-        aspects = [
-            _coverage_replacements_provider.aspect,
-        ],
-        doc = "The JVM libraries to add as dependencies to any libraries dependent on this one.",
+    "deps_unused_whitelist": attr.label_list(
+        doc = "The JVM library dependencies to always consider unused for `scala_deps_direct` checks.",
         providers = [JavaInfo],
     ),
     "runtime_deps": attr.label_list(
@@ -120,14 +117,6 @@ _compile_attributes = {
     ),
     "javacopts": attr.string_list(
         doc = "The Javac options.",
-    ),
-    "macro": attr.bool(
-        default = False,
-        doc = "Whether this library provides macros.",
-    ),
-    "neverlink": attr.bool(
-        default = False,
-        doc = "Whether this library should be excluded at runtime.",
     ),
     "plugins": attr.label_list(
         doc = "The Scalac plugins.",
@@ -156,6 +145,24 @@ _compile_attributes = {
     ),
 }
 
+_library_attributes = {
+    "exports": attr.label_list(
+        aspects = [
+            _coverage_replacements_provider.aspect,
+        ],
+        doc = "The JVM libraries to add as dependencies to any libraries dependent on this one.",
+        providers = [JavaInfo],
+    ),
+    "macro": attr.bool(
+        default = False,
+        doc = "Whether this library provides macros.",
+    ),
+    "neverlink": attr.bool(
+        default = False,
+        doc = "Whether this library should be excluded at runtime.",
+    ),
+}
+
 _runtime_attributes = {
     "jvm_flags": attr.string_list(
         doc = "The JVM runtime flags.",
@@ -167,10 +174,9 @@ _runtime_attributes = {
 }
 
 _runtime_private_attributes = {
-    "_jdk": attr.label(
+    "_target_jdk": attr.label(
         default = Label("@bazel_tools//tools/jdk:current_java_runtime"),
         providers = [java_common.JavaRuntimeInfo],
-        cfg = "host",
     ),
     "_java_stub_template": attr.label(
         default = Label("@anx_java_stub_template//file"),
@@ -244,6 +250,7 @@ def make_scala_library(*extras):
         attrs = _dicts.add(
             _compile_attributes,
             _compile_private_attributes,
+            _library_attributes,
             _extras_attributes(extras),
             *[extra["attrs"] for extra in extras]
         ),
@@ -479,11 +486,14 @@ configure_bootstrap_scala = rule(
             doc = "Scalac plugins that will always be enabled.",
             providers = [JavaInfo],
         ),
+        "global_scalacopts": attr.string_list(
+            doc = "Scalac options that will always be enabled.",
+        ),
     },
     implementation = _configure_bootstrap_scala_implementation,
 )
 
-configure_zinc_scala = rule(
+_configure_zinc_scala = rule(
     attrs = {
         "version": attr.string(mandatory = True),
         "runtime_classpath": attr.label_list(
@@ -501,6 +511,13 @@ configure_zinc_scala = rule(
         "global_plugins": attr.label_list(
             doc = "Scalac plugins that will always be enabled.",
             providers = [JavaInfo],
+        ),
+        "global_scalacopts": attr.string_list(
+            doc = "Scalac options that will always be enabled.",
+        ),
+        "log_level": attr.string(
+            doc = "Compiler log level",
+            default = "warn",
         ),
         "deps_direct": attr.string(default = "error"),
         "deps_used": attr.string(default = "error"),
@@ -525,3 +542,16 @@ configure_zinc_scala = rule(
     },
     implementation = _configure_zinc_scala_implementation,
 )
+
+def configure_zinc_scala(**kwargs):
+    _configure_zinc_scala(
+        deps_direct = select({
+            "@rules_scala_annex//src/main/scala:deps_direct_off": "off",
+            "//conditions:default": "error",
+        }),
+        deps_used = select({
+            "@rules_scala_annex//src/main/scala:deps_used_off": "off",
+            "//conditions:default": "error",
+        }),
+        **kwargs
+    )

@@ -5,7 +5,7 @@
 ## scala_binary
 
 <pre>
-scala_binary(<a href="#scala_binary-name">name</a>, <a href="#scala_binary-config">config</a>, <a href="#scala_binary-data">data</a>, <a href="#scala_binary-deps">deps</a>, <a href="#scala_binary-deps_used_whitelist">deps_used_whitelist</a>, <a href="#scala_binary-exports">exports</a>, <a href="#scala_binary-format">format</a>, <a href="#scala_binary-javacopts">javacopts</a>, <a href="#scala_binary-jvm_flags">jvm_flags</a>, <a href="#scala_binary-macro">macro</a>, <a href="#scala_binary-main_class">main_class</a>, <a href="#scala_binary-neverlink">neverlink</a>, <a href="#scala_binary-plugins">plugins</a>, <a href="#scala_binary-resource_jars">resource_jars</a>, <a href="#scala_binary-resource_strip_prefix">resource_strip_prefix</a>, <a href="#scala_binary-resources">resources</a>, <a href="#scala_binary-runtime_deps">runtime_deps</a>, <a href="#scala_binary-scala">scala</a>, <a href="#scala_binary-scalacopts">scalacopts</a>, <a href="#scala_binary-srcs">srcs</a>)
+scala_binary(<a href="#scala_binary-name">name</a>, <a href="#scala_binary-config">config</a>, <a href="#scala_binary-data">data</a>, <a href="#scala_binary-deps">deps</a>, <a href="#scala_binary-deps_unused_whitelist">deps_unused_whitelist</a>, <a href="#scala_binary-deps_used_whitelist">deps_used_whitelist</a>, <a href="#scala_binary-format">format</a>, <a href="#scala_binary-javacopts">javacopts</a>, <a href="#scala_binary-jvm_flags">jvm_flags</a>, <a href="#scala_binary-main_class">main_class</a>, <a href="#scala_binary-plugins">plugins</a>, <a href="#scala_binary-resource_jars">resource_jars</a>, <a href="#scala_binary-resource_strip_prefix">resource_strip_prefix</a>, <a href="#scala_binary-resources">resources</a>, <a href="#scala_binary-runtime_deps">runtime_deps</a>, <a href="#scala_binary-scala">scala</a>, <a href="#scala_binary-scalacopts">scalacopts</a>, <a href="#scala_binary-srcs">srcs</a>)
 </pre>
 
 
@@ -64,21 +64,21 @@ To run the program: `bazel run <target>`
         </p>
       </td>
     </tr>
+    <tr id="scala_binary-deps_unused_whitelist">
+      <td><code>deps_unused_whitelist</code></td>
+      <td>
+        <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
+        <p>
+          The JVM library dependencies to always consider unused for `scala_deps_direct` checks.
+        </p>
+      </td>
+    </tr>
     <tr id="scala_binary-deps_used_whitelist">
       <td><code>deps_used_whitelist</code></td>
       <td>
         <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
         <p>
           The JVM library dependencies to always consider used for `scala_deps_used` checks.
-        </p>
-      </td>
-    </tr>
-    <tr id="scala_binary-exports">
-      <td><code>exports</code></td>
-      <td>
-        <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
-        <p>
-          The JVM libraries to add as dependencies to any libraries dependent on this one.
         </p>
       </td>
     </tr>
@@ -106,30 +106,12 @@ To run the program: `bazel run <target>`
         </p>
       </td>
     </tr>
-    <tr id="scala_binary-macro">
-      <td><code>macro</code></td>
-      <td>
-        Boolean; optional
-        <p>
-          Whether this library provides macros.
-        </p>
-      </td>
-    </tr>
     <tr id="scala_binary-main_class">
       <td><code>main_class</code></td>
       <td>
         String; optional
         <p>
           The main class. If not provided, it will be inferred by its type signature.
-        </p>
-      </td>
-    </tr>
-    <tr id="scala_binary-neverlink">
-      <td><code>neverlink</code></td>
-      <td>
-        Boolean; optional
-        <p>
-          Whether this library should be excluded at runtime.
         </p>
       </td>
     </tr>
@@ -215,7 +197,7 @@ To run the program: `bazel run <target>`
 ## scala_library
 
 <pre>
-scala_library(<a href="#scala_library-name">name</a>, <a href="#scala_library-config">config</a>, <a href="#scala_library-data">data</a>, <a href="#scala_library-deps">deps</a>, <a href="#scala_library-deps_used_whitelist">deps_used_whitelist</a>, <a href="#scala_library-exports">exports</a>, <a href="#scala_library-format">format</a>, <a href="#scala_library-javacopts">javacopts</a>, <a href="#scala_library-macro">macro</a>, <a href="#scala_library-neverlink">neverlink</a>, <a href="#scala_library-plugins">plugins</a>, <a href="#scala_library-resource_jars">resource_jars</a>, <a href="#scala_library-resource_strip_prefix">resource_strip_prefix</a>, <a href="#scala_library-resources">resources</a>, <a href="#scala_library-runtime_deps">runtime_deps</a>, <a href="#scala_library-scala">scala</a>, <a href="#scala_library-scalacopts">scalacopts</a>, <a href="#scala_library-srcs">srcs</a>)
+scala_library(<a href="#scala_library-name">name</a>, <a href="#scala_library-config">config</a>, <a href="#scala_library-data">data</a>, <a href="#scala_library-deps">deps</a>, <a href="#scala_library-deps_unused_whitelist">deps_unused_whitelist</a>, <a href="#scala_library-deps_used_whitelist">deps_used_whitelist</a>, <a href="#scala_library-exports">exports</a>, <a href="#scala_library-format">format</a>, <a href="#scala_library-javacopts">javacopts</a>, <a href="#scala_library-macro">macro</a>, <a href="#scala_library-neverlink">neverlink</a>, <a href="#scala_library-plugins">plugins</a>, <a href="#scala_library-resource_jars">resource_jars</a>, <a href="#scala_library-resource_strip_prefix">resource_strip_prefix</a>, <a href="#scala_library-resources">resources</a>, <a href="#scala_library-runtime_deps">runtime_deps</a>, <a href="#scala_library-scala">scala</a>, <a href="#scala_library-scalacopts">scalacopts</a>, <a href="#scala_library-srcs">srcs</a>)
 </pre>
 
 Compiles a Scala JVM library.
@@ -261,6 +243,15 @@ Compiles a Scala JVM library.
         <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
         <p>
           The JVM library dependencies.
+        </p>
+      </td>
+    </tr>
+    <tr id="scala_library-deps_unused_whitelist">
+      <td><code>deps_unused_whitelist</code></td>
+      <td>
+        <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
+        <p>
+          The JVM library dependencies to always consider unused for `scala_deps_direct` checks.
         </p>
       </td>
     </tr>
@@ -397,7 +388,7 @@ Compiles a Scala JVM library.
 ## scala_test
 
 <pre>
-scala_test(<a href="#scala_test-name">name</a>, <a href="#scala_test-config">config</a>, <a href="#scala_test-data">data</a>, <a href="#scala_test-deps">deps</a>, <a href="#scala_test-deps_used_whitelist">deps_used_whitelist</a>, <a href="#scala_test-exports">exports</a>, <a href="#scala_test-format">format</a>, <a href="#scala_test-frameworks">frameworks</a>, <a href="#scala_test-isolation">isolation</a>, <a href="#scala_test-javacopts">javacopts</a>, <a href="#scala_test-jvm_flags">jvm_flags</a>, <a href="#scala_test-macro">macro</a>, <a href="#scala_test-neverlink">neverlink</a>, <a href="#scala_test-plugins">plugins</a>, <a href="#scala_test-resource_jars">resource_jars</a>, <a href="#scala_test-resource_strip_prefix">resource_strip_prefix</a>, <a href="#scala_test-resources">resources</a>, <a href="#scala_test-runner">runner</a>, <a href="#scala_test-runtime_deps">runtime_deps</a>, <a href="#scala_test-scala">scala</a>, <a href="#scala_test-scalacopts">scalacopts</a>, <a href="#scala_test-shared_deps">shared_deps</a>, <a href="#scala_test-srcs">srcs</a>, <a href="#scala_test-subprocess_runner">subprocess_runner</a>)
+scala_test(<a href="#scala_test-name">name</a>, <a href="#scala_test-config">config</a>, <a href="#scala_test-data">data</a>, <a href="#scala_test-deps">deps</a>, <a href="#scala_test-deps_unused_whitelist">deps_unused_whitelist</a>, <a href="#scala_test-deps_used_whitelist">deps_used_whitelist</a>, <a href="#scala_test-format">format</a>, <a href="#scala_test-frameworks">frameworks</a>, <a href="#scala_test-isolation">isolation</a>, <a href="#scala_test-javacopts">javacopts</a>, <a href="#scala_test-jvm_flags">jvm_flags</a>, <a href="#scala_test-plugins">plugins</a>, <a href="#scala_test-resource_jars">resource_jars</a>, <a href="#scala_test-resource_strip_prefix">resource_strip_prefix</a>, <a href="#scala_test-resources">resources</a>, <a href="#scala_test-runner">runner</a>, <a href="#scala_test-runtime_deps">runtime_deps</a>, <a href="#scala_test-scala">scala</a>, <a href="#scala_test-scalacopts">scalacopts</a>, <a href="#scala_test-shared_deps">shared_deps</a>, <a href="#scala_test-srcs">srcs</a>, <a href="#scala_test-subprocess_runner">subprocess_runner</a>)
 </pre>
 
 
@@ -455,21 +446,21 @@ To build and run a specific test: `bazel test <target> --test_filter=<filter_exp
         </p>
       </td>
     </tr>
+    <tr id="scala_test-deps_unused_whitelist">
+      <td><code>deps_unused_whitelist</code></td>
+      <td>
+        <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
+        <p>
+          The JVM library dependencies to always consider unused for `scala_deps_direct` checks.
+        </p>
+      </td>
+    </tr>
     <tr id="scala_test-deps_used_whitelist">
       <td><code>deps_used_whitelist</code></td>
       <td>
         <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
         <p>
           The JVM library dependencies to always consider used for `scala_deps_used` checks.
-        </p>
-      </td>
-    </tr>
-    <tr id="scala_test-exports">
-      <td><code>exports</code></td>
-      <td>
-        <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>; optional
-        <p>
-          The JVM libraries to add as dependencies to any libraries dependent on this one.
         </p>
       </td>
     </tr>
@@ -509,24 +500,6 @@ To build and run a specific test: `bazel test <target> --test_filter=<filter_exp
         List of strings; optional
         <p>
           The JVM runtime flags.
-        </p>
-      </td>
-    </tr>
-    <tr id="scala_test-macro">
-      <td><code>macro</code></td>
-      <td>
-        Boolean; optional
-        <p>
-          Whether this library provides macros.
-        </p>
-      </td>
-    </tr>
-    <tr id="scala_test-neverlink">
-      <td><code>neverlink</code></td>
-      <td>
-        Boolean; optional
-        <p>
-          Whether this library should be excluded at runtime.
         </p>
       </td>
     </tr>

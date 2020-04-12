@@ -7,7 +7,7 @@ Contributions should follow the [principals](../README.md#principals) of rules_s
 To generate the [Stardoc](https://github.com/bazelbuild/skydoc),
 
 ```
-$ ./gen-docs.sh
+$ ./scripts/gen-docs.sh
 ```
 
 ## Formatting
@@ -16,8 +16,7 @@ $ ./gen-docs.sh
 and [Scalafmt](https://scalameta.org/scalafmt/) is used to format Scala files. To run them,
 
 ```
-$ ./setup-tools.sh # first time
-$ ./format.sh
+$ ./scripts/format.sh
 ```
 
 ## Maven deps
@@ -42,7 +41,7 @@ maven_install(
         "org.scala-sbt:compiler-interface:1.2.1",
     ],
     repositories = [
-        "http://central.maven.org/maven2",
+        "https://repo.maven.apache.org/maven2",
     ],
 )
 ```
@@ -54,10 +53,10 @@ rules_scala_annex is tested on Ubuntu and OS X for the most recent thee minor ve
 
 ```
 $ # runs all tests
-$ ./test.sh
+$ ./scripts/test.sh
 ```
 
 ```
 $ # runs all tests in tests/dependencies/
-$ ./test.sh tests/dependencies/
+$ ./scripts/test.sh tests/dependencies/
 ```

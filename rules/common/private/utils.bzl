@@ -24,8 +24,7 @@ def strip_margin(str, delim = "|"):
 
 def _strip_margin_line(line, delim):
     trimmed = line.lstrip(" ")
-    pos = trimmed.find(delim, end = 1)
-    if pos == 0:
+    if trimmed[:1] == delim:
         return trimmed[1:]
     else:
         return line
@@ -61,11 +60,12 @@ def write_launcher(
     template = ctx.file._java_stub_template
     runfiles_enabled = False
 
-    java_path = str(ctx.attr._jdk[java_common.JavaRuntimeInfo].java_executable_runfiles_path)
+    java_executable = ctx.attr._target_jdk[java_common.JavaRuntimeInfo].java_executable_runfiles_path
+    java_path = str(java_executable)
     if paths.is_absolute(java_path):
         javabin = java_path
     else:
-        javabin = "$JAVA_RUNFILES/{}/{}".format(ctx.workspace_name, ctx.attr._jdk[java_common.JavaRuntimeInfo].java_executable_runfiles_path)
+        javabin = "$JAVA_RUNFILES/{}/{}".format(ctx.workspace_name, java_executable)
 
     base_substitutions = {
         "%classpath%": classpath,
@@ -153,7 +153,6 @@ def action_singlejar(
     args.add_all("--sources", inputs)
     args.add_all("--resources", ["{}:{}".format(value.path, key) for key, value in resources.items()])
     args.add("--output", output)
-    args.add("--warn_duplicate_resources")
     if main_class != None:
         args.add("--main_class", main_class)
         args.set_param_file_format("multiline")

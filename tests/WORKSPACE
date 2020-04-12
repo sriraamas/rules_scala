@@ -1,18 +1,31 @@
+workspace(name = "rules_scala_annex_test")
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-git_repository(
+bazel_skylib_tag = "1.0.2"
+
+bazel_skylib_sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44"
+
+http_archive(
     name = "bazel_skylib",
-    remote = "https://github.com/bazelbuild/bazel-skylib.git",
-    tag = "0.8.0",
+    sha256 = bazel_skylib_sha256,
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/{tag}/bazel-skylib-{tag}.tar.gz".format(tag = bazel_skylib_tag),
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/{tag}/bazel-skylib-{tag}.tar.gz".format(tag = bazel_skylib_tag),
+    ],
 )
+
+protobuf_tag = "3.10.1"
+
+protobuf_sha256 = "678d91d8a939a1ef9cb268e1f20c14cd55e40361dc397bb5881e4e1e532679b1"
 
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "8eb5ca331ab8ca0da2baea7fc0607d86c46c80845deca57109a5d637ccb93bb4",
-    strip_prefix = "protobuf-3.9.0",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.9.0.zip"],
+    sha256 = protobuf_sha256,
+    strip_prefix = "protobuf-{}".format(protobuf_tag),
+    type = "zip",
+    url = "https://github.com/protocolbuffers/protobuf/archive/v{}.zip".format(protobuf_tag),
 )
 
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
@@ -53,11 +66,15 @@ local_repository(
     path = "../",
 )
 
+rules_jvm_external_tag = "2.9"
+
+rules_jvm_external_sha256 = "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45"
+
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "55e8d3951647ae3dffde22b4f7f8dee11b3f70f3f89424713debd7076197eaca",
-    strip_prefix = "rules_jvm_external-2.0.1",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/2.0.1.zip",
+    sha256 = rules_jvm_external_sha256,
+    strip_prefix = "rules_jvm_external-{}".format(rules_jvm_external_tag),
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/{}.zip".format(rules_jvm_external_tag),
 )
 
 load(
@@ -67,6 +84,10 @@ load(
 )
 
 scala_repositories()
+
+load("@annex//:defs.bzl", annex_pinned_maven_install = "pinned_maven_install")
+
+annex_pinned_maven_install()
 
 scala_register_toolchains()
 
@@ -79,6 +100,10 @@ load(
 scala_proto_repositories()
 
 scala_proto_register_toolchains()
+
+load("@annex_proto//:defs.bzl", annex_proto_pinned_maven_install = "pinned_maven_install")
+
+annex_proto_pinned_maven_install()
 
 load("@rules_scala_annex//rules:rules_scala.bzl", "emulate_rules_scala")
 load("@rules_scala_annex//rules:external.bzl", "scala_import_external")
@@ -103,115 +128,130 @@ load("@rules_scala_annex//rules/scalafmt:workspace.bzl", "scalafmt_default_confi
 
 scalafmt_repositories()
 
+load("@annex_scalafmt//:defs.bzl", annex_scalafmt_pinned_maven_install = "pinned_maven_install")
+
+annex_scalafmt_pinned_maven_install()
+
 scalafmt_default_config()
 
-load(":workspace.bzl", "maven_dependencies")
+load(":workspace.bzl", "test_dependencies")
 
-maven_dependencies()
+test_dependencies()
 
-jvm_maven_import_external(
-    name = "kind_projector_2_11",
-    artifact = "org.spire-math:kind-projector_2.12:0.9.6",
-    licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
-)
+load("@annex_test//:defs.bzl", annex_test_pinned_maven_install = "pinned_maven_install")
+
+annex_test_pinned_maven_install()
 
 jvm_maven_import_external(
     name = "kind_projector_2_12",
     artifact = "org.spire-math:kind-projector_2.12:0.9.6",
+    artifact_sha256 = "ed1d7c50b2bfdc404eacf086202399612c8109ecac59bac107540e817f9c8fcf",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "org_scalacheck_scalacheck_2_11",
     artifact = "org.scalacheck:scalacheck_2.11:1.14.0",
+    artifact_sha256 = "9ccf3a85a3396fb172a4c028cfaf9f4a699a144806eeeb0bf2e9c3510ba5b276",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "junit",
     artifact = "junit:junit:4.12",
+    artifact_sha256 = "59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "hamcrest_core",
     artifact = "org.hamcrest:hamcrest-core:1.3",
+    artifact_sha256 = "66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "junit_interface",
     artifact = "com.novocode:junit-interface:jar:0.11",
+    artifact_sha256 = "29e923226a0d10e9142bbd81073ef52f601277001fcf9014389bf0af3dc33dc3",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_compiler_2_11_12",
     artifact = "org.scala-lang:scala-compiler:2.11.12",
+    artifact_sha256 = "3e892546b72ab547cb77de4d840bcfd05c853e73390fed7370a8f19acb0735a0",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_library_2_11_12",
     artifact = "org.scala-lang:scala-library:2.11.12",
+    artifact_sha256 = "0b3d6fd42958ee98715ba2ec5fe221f4ca1e694d7c981b0ae0cd68e97baf6dce",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_reflect_2_11_12",
     artifact = "org.scala-lang:scala-reflect:2.11.12",
+    artifact_sha256 = "6ba385b450a6311a15c918cf8688b9af9327c6104f0ecbd35933cfcd3095fe04",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_compiler_2_12_6",
     artifact = "org.scala-lang:scala-compiler:2.12.6",
+    artifact_sha256 = "3023b07cc02f2b0217b2c04f8e636b396130b3a8544a8dfad498a19c3e57a863",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_library_2_12_6",
     artifact = "org.scala-lang:scala-library:2.12.6",
+    artifact_sha256 = "f81d7144f0ce1b8123335b72ba39003c4be2870767aca15dd0888ba3dab65e98",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_reflect_2_12_6",
     artifact = "org.scala-lang:scala-reflect:2.12.6",
+    artifact_sha256 = "ffa70d522fc9f9deec14358aa674e6dd75c9dfa39d4668ef15bb52f002ce99fa",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_compiler_typelevel_2_12_1",
     artifact = "org.typelevel:scala-compiler:2.12.1",
+    artifact_sha256 = "804373bb9209a8bc66741789ea14c61784e26a73d29c4ef9b7f851b625d6316d",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_library_typelevel_2_12_1",
     artifact = "org.typelevel:scala-library:2.12.1",
+    artifact_sha256 = "50e82cd9439fd41c7c98b90048ed8be864f58e56c694761123011adc53d8558d",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 jvm_maven_import_external(
     name = "scala_reflect_typelevel_2_12_1",
     artifact = "org.typelevel:scala-reflect:2.12.1",
+    artifact_sha256 = "7b43a5040425e2eeeb1ff5e9aeb9cba623f0ddfcc959d048f4c26e4346155b29",
     licenses = ["notice"],
-    server_urls = ["http://central.maven.org/maven2"],
+    server_urls = ["https://repo.maven.apache.org/maven2"],
 )
 
 bind(

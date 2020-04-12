@@ -11,6 +11,7 @@ ScalaConfiguration = provider(
         "compiler_classpath": "The compiler classpath.",
         "runtime_classpath": "The runtime classpath.",
         "global_plugins": "Globally enabled compiler plugins",
+        "global_scalacopts": "Globally enabled compiler options",
     },
 )
 
@@ -20,6 +21,7 @@ def _declare_scala_configuration_implementation(ctx):
         ScalaConfiguration(
             compiler_classpath = ctx.attr.compiler_classpath,
             global_plugins = ctx.attr.global_plugins,
+            global_scalacopts = ctx.attr.global_scalacopts,
             runtime_classpath = ctx.attr.runtime_classpath,
             version = ctx.attr.version,
         ),
@@ -40,6 +42,9 @@ declare_scala_configuration = rule(
             doc = "Scalac plugins that will always be enabled.",
             providers = [JavaInfo],
         ),
+        "global_scalacopts": attr.string_list(
+            doc = "Scalac options that will always be enabled.",
+        ),
     },
     doc = "Creates a `ScalaConfiguration`.",
     implementation = _declare_scala_configuration_implementation,
@@ -58,6 +63,7 @@ ZincConfiguration = provider(
     fields = {
         "compiler_bridge": "compiled Zinc compiler bridge",
         "compile_worker": "the worker label for compilation with Zinc",
+        "log_level": "log level for the Zinc compiler",
     },
 )
 

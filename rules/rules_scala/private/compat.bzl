@@ -75,6 +75,7 @@ def scala_library(
     if main_class != None:
         print("%s: main_class unsupported" % name)
 
+    deps = deps if deps else []
     _scala_library(
         name = name,
         srcs = srcs,
@@ -185,12 +186,11 @@ def scala_binary(
     if classpath_resources != []:
         print("%s: classpath_resources unsupported" % name)
 
-    scala_compiler_deps = [] if _scala in deps else [_scala]
+    deps = deps if deps else []
     _scala_binary(
         name = name,
         srcs = srcs,
         deps_used_whitelist = _extra_deps,
-        macro = not _use_ijar,
         main_class = main_class,
         scala = _scala,
         tags = tags,
@@ -254,13 +254,12 @@ def scala_test(
     if full_stacktraces != None:
         print("%s: full_stacktraces unsupported" % name)
 
-    scala_compiler_deps = [] if _scala in deps else [_scala]
+    deps = deps if deps else []
     _scala_test(
         name = name,
         srcs = srcs,
         deps_used_whitelist = _extra_deps,
         frameworks = ["org.scalatest.tools.Framework"],
-        macro = not _use_ijar,
         scala = _scala,
         tags = tags,
         runtime_deps = runtime_deps,
